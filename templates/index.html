@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f7f4">
+  <title>Employee Insights Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  <div class="assistant-shell-v2" id="assistant-shell">
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Chat sidebar">
+      <div class="sidebar-brand-row">
+        <a class="brand-lockup-v2" href="/" aria-label="Employee Insights Assistant home">
+          <span class="brand-symbol-v2" aria-hidden="true">E</span>
+          <span class="brand-name-v2">Employee Insights Assistant</span>
+        </a>
+        <button class="sidebar-icon-button sidebar-collapse" id="sidebar-collapse" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="2.5"></rect><path d="M9 4v16M14 9l-3 3 3 3"></path></svg>
+        </button>
+      </div>
+      <button class="new-conversation-button" id="new-chat" type="button" title="Start a new chat">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+        <span>New Chat</span>
+      </button>
+      <div class="history-heading">Recent chats</div>
+      <nav class="conversation-history" id="conversation-history" aria-label="Conversation history"></nav>
+    </aside>
+    <button class="sidebar-backdrop" id="sidebar-backdrop" type="button" aria-label="Close sidebar"></button>
+
+    <main class="chat-main">
+      <header class="chat-topbar">
+        <button class="sidebar-icon-button sidebar-open-button" id="sidebar-toggle" type="button" aria-label="Open sidebar" title="Toggle sidebar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+        <div class="topbar-brand">
+          <span class="topbar-brand-mark" aria-hidden="true">E</span>
+          <span>Employee Insights Assistant</span>
+        </div>
+        <span class="topbar-spacer" aria-hidden="true"></span>
+      </header>
+
+      <dialog class="email-report-dialog" id="email-report-dialog" aria-labelledby="email-report-title">
+        <form class="email-report-form" id="email-report-form">
+          <div class="email-report-heading">
+            <h2 id="email-report-title">Email Report</h2>
+            <button class="sidebar-icon-button email-report-close" id="email-report-close" type="button" aria-label="Close email form" title="Close">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+            </button>
+          </div>
+          <p class="email-report-filename" id="email-report-filename"></p>
+          <div class="email-report-recipient-row">
+            <label class="email-report-field" for="email-recipient">
+              <span>Email address</span>
+              <input id="email-recipient" type="email" maxlength="254" autocomplete="email" placeholder="name@example.com" required>
+            </label>
+            <label class="email-report-auto" for="email-auto-send">
+              <input id="email-auto-send" type="checkbox">
+              <span>Automatically email new reports</span>
+            </label>
+          </div>
+          <label class="email-report-field" for="email-subject">
+            <span>Subject</span>
+            <input id="email-subject" type="text" maxlength="500" required>
+          </label>
+          <label class="email-report-field" for="email-message">
+            <span>Message <small>(optional)</small></span>
+            <textarea id="email-message" rows="3" maxlength="10000"></textarea>
+          </label>
+          <div class="email-report-actions">
+            <button class="email-report-cancel" id="email-report-cancel" type="button">Cancel</button>
+            <button class="email-report-send" id="email-report-send" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4zM4 7l8 6 8-6"></path></svg>
+              <span>Send Email</span>
+            </button>
+          </div>
+          <p class="email-report-status" id="email-report-status" role="status" aria-live="polite"></p>
+        </form>
+      </dialog>
+
+      <section class="chat-transcript" id="conversation" aria-label="Conversation" aria-live="polite">
+        <div class="chat-empty" id="empty-state">
+          <span class="empty-brand-mark" aria-hidden="true">E</span>
+          <h1>Employee Insights Assistant</h1>
+          <p>Ask questions about your workforce in plain English.</p>
+        </div>
+        <div class="chat-messages" id="messages"></div>
+        <button class="jump-to-latest" id="jump-to-latest" type="button" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14m-6-6 6 6 6-6"></path></svg>
+          <span>Jump to latest</span>
+        </button>
+      </section>
+
+      <footer class="chat-footer">
+        <div class="composer-wrap-v2">
+          <form class="message-composer-v2" id="query-form">
+            <label class="visually-hidden-v2" for="query-input">Your message</label>
+            <textarea id="query-input" name="requirement" rows="1" maxlength="2000" placeholder="Message Employee Insights Assistant" required></textarea>
+            <div class="composer-actions-v2">
+              <button class="voice-button" id="mic-button" type="button" aria-label="Start voice input" aria-pressed="false" title="Start voice input">
+                <svg class="mic-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"></rect><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21m-3 0h6"></path></svg>
+              </button>
+              <button class="send-button-v2" id="send-button" type="submit" aria-label="Send message" title="Send message">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"></path></svg>
+              </button>
+            </div>
+          </form>
+          <div class="message-edit-actions" id="message-edit-actions" hidden>
+            <span id="message-edit-label">Editing message</span>
+            <button id="cancel-edit-button" type="button">Cancel</button>
+            <button id="save-edit-button" type="button">Save &amp; Resend</button>
+          </div>
+          <p class="voice-status" id="voice-status" role="status" aria-live="polite"></p>
+          <div class="app-attribution">
+            <span>© 2026. All rights reserved.</span>
+            <span>Created by Mary Prathyusha Basani</span>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </div>
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>
