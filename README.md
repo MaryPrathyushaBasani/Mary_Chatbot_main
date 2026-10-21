@@ -1,36 +1,37 @@
 # Mary Chatbot Main
 
-This folder is a self-contained copy of MARY and the Employee Insights Assistant. It includes the Flask app, query and report logic, templates, static assets, and a Dockerfile. No database or credentials are bundled.
+This repository contains the standalone MARY Employee Insights Assistant app, its query and report logic, and its web interface. It does not contain employee data, database credentials, or API keys.
 
-## Required configuration
+## Run locally
 
-Set these as environment variables or hosting-provider secrets. Do not commit a `.env` file or place secret values in source control.
+Use Python 3.11 or newer. From this folder, create and activate a virtual environment, then install the dependencies:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+Configure the required values as environment variables or in an untracked `.env` file. Never commit credentials.
 
 | Variable | Purpose |
 | --- | --- |
-| `APP_ACCESS_USERNAME` | Username required to access the app |
-| `APP_ACCESS_PASSWORD` | Password required to access the app |
-| `MYSQL_HOST` | MySQL hostname reachable from the app host |
+| `APP_ACCESS_USERNAME` | Login username |
+| `APP_ACCESS_PASSWORD` | Login password |
+| `MYSQL_HOST` | MySQL server hostname |
 | `MYSQL_PORT` | MySQL port, normally `3306` |
-| `MYSQL_USER` | Dedicated, read-only database user |
-| `MYSQL_PASSWORD` | Database user password |
-| `MYSQL_SCHEMA` | Database/schema containing `employees_messy` |
-| `AZURE_OPENAI_ENDPOINT` | Azure OpenAI resource endpoint |
+| `MYSQL_USER` | Read-only database user |
+| `MYSQL_PASSWORD` | Database password |
+| `MYSQL_SCHEMA` | Schema containing `employees_messy` |
+| `AZURE_OPENAI_ENDPOINT` | Azure OpenAI endpoint |
 | `AZURE_OPENAI_API_KEY` | Azure OpenAI key |
 | `AZURE_OPENAI_API_VERSION` | Azure OpenAI API version |
 | `AZURE_OPENAI_DEPLOYMENT_MINI` | Chat deployment name |
-| `MYSQL_SSL_CA` | Optional path to the MySQL CA certificate |
 
-SMTP settings are optional and only needed for email delivery: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_EMAIL`, `SMTP_USE_TLS`, and `SMTP_USE_SSL`.
+Start the app and open `http://127.0.0.1:5018/`:
 
-## Deployment
+```powershell
+python app.py
+```
 
-No hosting provider is selected yet. The container listens on `PORT` (default `8080`) and exposes `/healthz` for health checks. Configure the required variables through the selected host's secret manager; do not commit `.env` files, credentials, database dumps, or logs.
-
-Choose a host that can run the Docker image and securely reach the MySQL database. Keep MySQL private, use TLS where supported, and grant the app's database account read-only access to the required schema/table. Keep `APP_ACCESS_USERNAME` and `APP_ACCESS_PASSWORD` set; the app rejects non-health requests if either is missing. Use HTTPS and restrict access to approved peers.
-
-## Database and privacy
-
-Do not expose MySQL to the public internet. Use TLS where supported by the database, and a database account with read-only grants for the required schema/table. Do not put a database dump in this repository or container image.
-
-The app keeps report and query context in process memory. Keep a single app replica; report links and context are lost when the instance restarts. Multiple replicas require moving this state to shared storage first.
+The app uses the configured MySQL database and requires authentication for every route except `/healthz`. Keep the database private, use a read-only database account, and do not add database dumps, logs, or secrets to this public repository. Report and query context is stored in process memory and is cleared when the app restarts.
